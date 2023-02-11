@@ -1,5 +1,8 @@
 import psycopg2
 import pandas as pd
+import networkx as nx
+import matplotlib.pyplot as plt
+
 
 hostname = 'localhost'
 database = 'agent_hunt'
@@ -24,7 +27,7 @@ try:
     cur = conn.cursor()
     
     cur.execute('SELECT a.id,b.id from agent_info a INNER JOIN brokerage b on a.brokerage_id = b.id order by b.id asc')
-    agents_brokerage = cur.fetchmany(10)
+    agents_brokerage = cur.fetchmany(20)
 
     relations = []
     for i in range(len(agents_brokerage)):
@@ -35,9 +38,13 @@ try:
                 break
 
 
+    graph = nx.Graph()
+ 
+    for relation in relations:
+        graph.add_edge(relation[0], relation[1])
     
-    # relations = pd.DataFrame(relations)
-    # relations.to_csv('relations.csv')
+    nx.draw(graph)
+    plt.savefig("relations.png")
     
 
 except Exception as error:
