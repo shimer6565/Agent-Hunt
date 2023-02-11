@@ -56,3 +56,8 @@ def displayTopN(n = 10):
 def displayInsights():
     return render_template('insights.html')
 
+@app.route('/ERDiagram',methods=['POST','GET'])
+
+def displayERD():
+    return render_template('erDiagram.html')
+
