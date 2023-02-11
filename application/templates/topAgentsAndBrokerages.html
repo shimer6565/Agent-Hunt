@@ -3,5 +3,37 @@
 {% block content %}
 
 
+  <table>
+    <tr>
+      <table>
+        <tr>
+            <th>Agent ID</th>
+            <th>Agent Name</th>
+            <th>Total Deals</th>
+        </tr>
+        {% for agent in agents %}
+            <tr>
+                <td> {{ agent[0] }} </td>
+                <td> {{ agent[1] }} </td>
+                <td> {{ agent[2] }} </td>
+            </tr>
+        {% endfor %}
+      </table>
+      <table>
+        <tr>
+            <th>Brokerge ID</th>
+            <th>Brokerge Name</th>
+            <th>Total Deals</th>
+        </tr>
+        {% for broker in brokerages %}
+            <tr>
+                <td> {{ broker[0] }} </td>
+                <td> {{ broker[1] }} </td>
+                <td> {{ broker[2] }} </td>
+            </tr>
+        {% endfor %}
+      </table>
+    </tr>
+  </table>
 
 {% endblock %}

@@ -16,7 +16,7 @@ def home():
 
 @app.route('/topn',methods=['POST','GET'])
 
-def displayTopN(n):
+def displayTopN(n = 10):
     conn = None
     cur = None
 
