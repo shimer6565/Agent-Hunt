@@ -61,3 +61,8 @@ def displayInsights():
 def displayERD():
     return render_template('erDiagram.html')
 
+@app.route('/agentsRelation',methods=['POST','GET'])
+
+def displayRelation():
+    return render_template('relations.html')
+
