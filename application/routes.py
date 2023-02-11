@@ -50,3 +50,9 @@ def displayTopN(n = 10):
             conn.close()
 
     return render_template('topAgentsAndBrokerages.html', agents = topNagents, brokerages = topNbrokerages)
+
+@app.route('/insights',methods=['POST','GET'])
+
+def displayInsights():
+    return render_template('insights.html')
+
