@@ -1,6 +1,8 @@
 import psycopg2
 import pandas as pd
 from application import app
+import networkx as nx
+import matplotlib.pyplot as plt
 from flask import Flask, render_template, request, redirect, url_for
 from urllib.parse import urlparse 
 
@@ -100,6 +102,45 @@ def displayRelationById():
     country_mid = request.form['country_mid']
     zipcode_mid = request.form['zipcode_mid']
 
+    try:
+
+        result = urlparse("postgres://zh_agenthunt_user:nPP2m1ElEbJSsZTTsgYdgKI4RaJiOMMA@dpg-cfjvb6ta49903flrl17g-a.singapore-postgres.render.com/zh_agenthunt")
+        username = result.username
+        password = result.password
+        database = result.path[1:]
+        hostname = result.hostname
+        port = result.port
+        conn = psycopg2.connect(
+            database = database,
+            user = username,
+            password = password,
+            host = hostname,
+            port = port
+        )
+
+        print(state_mid, country_mid, city_mid, zipcode_mid)
+        cur = conn.cursor()
+        cur.execute('SELECT * FROM agent_relations ar INNER JOIN home_info h ON ar.home_id = h.id WHERE h.state_market_id = %s and h.county_market_id = %s and h.city_market_id = %s and h.zipcode_market_id = %s',(state_mid, country_mid, city_mid, zipcode_mid,))
+        agents_relations = cur.fetchmany(20)
+        print(len(agents_relations))
+
+        graph = nx.Graph()
+ 
+        for relation in agents_relations:
+            graph.add_edge(relation[0], relation[2])
+        
+        nx.draw(graph, node_size=10)
+        plt.savefig("relations_based_on_id.png")
+        
+
+    except Exception as error:
+        print(error)
+
+    finally:
+        if cur is not None:
+            cur.close()
+        if conn is not None:
+            conn.close()
+
     print(city_mid)
     return render_template('relationByMarket.html')
-
