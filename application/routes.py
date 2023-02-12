@@ -122,7 +122,7 @@ def displayRelationById():
         cur = conn.cursor()
         cur.execute('SELECT * FROM agent_relations ar INNER JOIN home_info h ON ar.home_id = h.id WHERE h.state_market_id = %s and h.county_market_id = %s and h.city_market_id = %s and h.zipcode_market_id = %s',(state_mid, country_mid, city_mid, zipcode_mid,))
         agents_relations = cur.fetchmany(500)
-        print(len(agents_relations))
+        print("----------",len(agents_relations))
 
         graph = nx.Graph()
  
@@ -130,7 +130,7 @@ def displayRelationById():
             graph.add_edge(relation[0], relation[2])
         
         nx.draw(graph, node_size=10)
-        plt.savefig("relations_based_on_id.png")
+        plt.savefig("application/static/relations_based_on_id.png")
         
 
     except Exception as error:
