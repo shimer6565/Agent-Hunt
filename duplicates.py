@@ -1,6 +1,8 @@
 import psycopg2
 from collections import Counter
 from math import sqrt
+from urllib.parse import urlparse 
+
 
 
 hostname = 'localhost'
@@ -30,12 +32,18 @@ def cosdis(v1, v2):
 
 try:
 
+    result = urlparse("postgres://zh_agenthunt_user:nPP2m1ElEbJSsZTTsgYdgKI4RaJiOMMA@dpg-cfjvb6ta49903flrl17g-a.singapore-postgres.render.com/zh_agenthunt")
+    username = result.username
+    password = result.password
+    database = result.path[1:]
+    hostname = result.hostname
+    port = result.port
     conn = psycopg2.connect(
-        host = hostname,
-        dbname = database,
+        database = database,
         user = username,
-        password = pwd,
-        port = port_id
+        password = password,
+        host = hostname,
+        port = port
     )
 
     cur = conn.cursor()
