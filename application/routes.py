@@ -121,7 +121,7 @@ def displayRelationById():
         print(state_mid, country_mid, city_mid, zipcode_mid)
         cur = conn.cursor()
         cur.execute('SELECT * FROM agent_relations ar INNER JOIN home_info h ON ar.home_id = h.id WHERE h.state_market_id = %s and h.county_market_id = %s and h.city_market_id = %s and h.zipcode_market_id = %s',(state_mid, country_mid, city_mid, zipcode_mid,))
-        agents_relations = cur.fetchmany(20)
+        agents_relations = cur.fetchmany(500)
         print(len(agents_relations))
 
         graph = nx.Graph()
