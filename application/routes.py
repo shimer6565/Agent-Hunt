@@ -2,11 +2,13 @@ import psycopg2
 import pandas as pd
 from application import app
 from flask import Flask, render_template, request, redirect, url_for
+from urllib.parse import urlparse 
 
-hostname = 'localhost'
-database = 'agent_hunt'
-username = 'postgres'
-pwd = '56565'
+
+hostname = ' dpg-cfjvb6ta49903flrl17g-a.singapore-postgres.render.com'
+database = 'zh_agenthunt'
+username = 'zh_agenthunt_user'
+pwd = 'nPP2m1ElEbJSsZTTsgYdgKI4RaJiOMMA'
 port_id = 5432
 
 @app.route('/',methods=['POST','GET'])
@@ -14,28 +16,47 @@ port_id = 5432
 def home():
     return render_template('home.html')
 
+@app.route('/getN',methods=['POST','GET'])
+
+def getValForN():
+        return render_template('getN.html')
+
 @app.route('/topn',methods=['POST','GET'])
 
-def displayTopN(n = 10):
+def displayTopN():
     conn = None
     cur = None
 
+    n = request.form['n']
+    city_mid = request.form['city_mid']
+    state_mid = request.form['state_mid']
+    country_mid = request.form['country_mid']
+    zipcode_mid = request.form['zipcode_mid']
+
     try:
 
+        result = urlparse("postgres://zh_agenthunt_user:nPP2m1ElEbJSsZTTsgYdgKI4RaJiOMMA@dpg-cfjvb6ta49903flrl17g-a.singapore-postgres.render.com/zh_agenthunt")
+        username = result.username
+        password = result.password
+        database = result.path[1:]
+        hostname = result.hostname
+        port = result.port
         conn = psycopg2.connect(
-            host = hostname,
-            dbname = database,
+            database = database,
             user = username,
-            password = pwd,
-            port = port_id
+            password = password,
+            host = hostname,
+            port = port
         )
 
+        print(state_mid, country_mid, city_mid, zipcode_mid)
         cur = conn.cursor()
-        cur.execute('SELECT a.id, a.first_name, count(*) FROM agent_listing al INNER JOIN home_info h ON al.home_id = h.id INNER JOIN agent_info a ON al.agent_id = a.id GROUP BY a.id ORDER BY COUNT(*) DESC FETCH FIRST %s ROWS ONLY',(n,))
+        cur.execute('SELECT a.id, a.first_name, count(*) FROM agent_listing al INNER JOIN home_info h ON al.home_id = h.id INNER JOIN agent_info a ON al.agent_id = a.id WHERE h.state_market_id = %s and h.county_market_id = %s and h.city_market_id = %s and h.zipcode_market_id = %s GROUP BY a.id ORDER BY COUNT(*) DESC FETCH FIRST %s ROWS ONLY',(state_mid, country_mid, city_mid, zipcode_mid, n,))
         topNagents = cur.fetchall()
+        print(topNagents)
 
 
-        cur.execute('SELECT b.id,b.name, count(*) FROM agent_listing al INNER JOIN home_info h ON al.home_id = h.id INNER JOIN agent_info a ON al.agent_id = a.id INNER JOIN brokerage b ON b.id = a.brokerage_id GROUP BY b.id ORDER BY COUNT(*) DESC FETCH FIRST %s ROWS ONLY',(n,))
+        cur.execute('SELECT b.id, b.name, count(*) FROM agent_listing al INNER JOIN home_info h ON al.home_id = h.id INNER JOIN agent_info a ON al.agent_id = a.id INNER JOIN brokerage b ON b.id = a.brokerage_id WHERE h.state_market_id = %s and h.county_market_id = %s and h.city_market_id = %s and h.zipcode_market_id = %s GROUP BY b.id ORDER BY COUNT(*) DESC FETCH FIRST %s ROWS ONLY',(state_mid, country_mid, city_mid, zipcode_mid, n,))
         topNbrokerages = cur.fetchall()
 
 
@@ -65,4 +86,20 @@ def displayERD():
 
 def displayRelation():
     return render_template('relations.html')
+
+@app.route('/temp',methods=['POST','GET'])
+
+def display():
+    return render_template('getMarketId.html')
+
+@app.route('/relationByMarketID',methods=['POST'])
+
+def displayRelationById():
+    city_mid = request.form['city_mid']
+    state_mid = request.form['state_mid']
+    country_mid = request.form['country_mid']
+    zipcode_mid = request.form['zipcode_mid']
+
+    print(city_mid)
+    return render_template('relationByMarket.html')
 

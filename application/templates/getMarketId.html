@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div style="border-style: solid;border-width: 3px;border-color: red;margin: auto;width: 40%;margin-top:13%; text-align:center;background-color:white;">
+<form action="/relationByMarketID" method="post">
+    <input style="width:420px;text-align:center;padding:3px;margin:5px;margin-top:30px;" name="city_mid" placeholder="Enter the City Market ID (e.g. 714)">
+    <br>
+    <input style="width:420px;text-align:center;padding:3px;margin:5px;" name="state_mid" placeholder="Enter the State Market ID (e.g. 672)">
+    <br>
+    <input style="width:420px;text-align:center;padding:3px;margin:5px;" name="country_mid" placeholder="Enter the Country Market ID (e.g. 675)">
+    <br>
+    <input style="width:420px;text-align:center;padding:3px;margin:5px;" name="zipcode_mid" placeholder="Enter the Zipcode Market ID (e.g. 1681)">
+    <br>
+    <button type="submit" style="margin:10px;" class="btn btn-danger" >SUBMIT</button>
+</form>
+</div>
+
+{% endblock %}
